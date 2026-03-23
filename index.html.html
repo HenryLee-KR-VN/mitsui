@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="ko" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이터 관리 및 업무 자동화 실무 과정</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background-color: #FAFAF9;
+            color: #292524;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 300px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-height: 350px;
+            }
+        }
+
+        .tab-btn.active {
+            background-color: #0F766E;
+            color: white;
+            border-color: #0F766E;
+        }
+
+        .workflow-card.active {
+            border-color: #0F766E;
+            background-color: #F0FDFA;
+        }
+
+        .step-arrow::after {
+            content: '↓';
+            display: block;
+            text-align: center;
+            font-size: 1.5rem;
+            color: #9CA3AF;
+            margin: 0.5rem 0;
+        }
+        @media (min-width: 768px) {
+            .step-arrow::after {
+                content: '→';
+                margin: 0 1rem;
+                line-height: 4rem;
+            }
+            .step-container {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Chosen Palette: Warm Neutrals (Stone/Warm Gray) with Teal (#0F766E) accent for a calm, professional, and trustworthy corporate tech feel. -->
+    
+    <!-- Application Structure Plan: A single-page scrolling dashboard divided into 4 logical sections (Hero/Overview, Curriculum Timeline, Interactive Workflows, Checklist). This structure allows decision-makers to quickly grasp the value proposition (Overview), explore the schedule dynamically (Curriculum Tabs), visually understand the technical implementation (Workflow Interactive Explorer), and verify requirements (Checklist). This non-linear exploration is superior to a flat document. -->
+    
+    <!-- Visualization & Content Choices: 
+         1. Time Allocation -> Goal: Inform -> Doughnut Chart (Chart.js) -> Hover interaction -> Shows balance of theory vs practice -> No SVG.
+         2. Curriculum -> Goal: Organize -> Tabbed Timeline (HTML/JS) -> Click tabs -> Reduces cognitive load by splitting days -> No SVG.
+         3. Workflows -> Goal: Explain Process -> Interactive Step Visualizer (Grid/Flex+JS) -> Click workflow to see steps -> Translates abstract concepts into concrete data pipelines -> No SVG. 
+    -->
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <nav class="fixed w-full bg-white/90 backdrop-blur-md border-b border-stone-200 z-50">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl">🚀</span>
+                    <span class="font-bold text-xl text-stone-800 tracking-tight">For Mitsui Korea</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#overview" class="text-stone-600 hover:text-teal-700 font-medium transition">과정 개요</a>
+                    <a href="#curriculum" class="text-stone-600 hover:text-teal-700 font-medium transition">커리큘럼</a>
+                    <a href="#workflows" class="text-stone-600 hover:text-teal-700 font-medium transition">자동화 워크플로우</a>
+                    <a href="#checklist" class="text-stone-600 hover:text-teal-700 font-medium transition">사전 준비</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-16">
+        <section class="bg-stone-900 text-stone-50 py-20 lg:py-32 px-4 relative overflow-hidden">
+            <div class="max-w-4xl mx-auto text-center relative z-10">
+                <span class="inline-block py-1 px-3 rounded-full bg-teal-800/50 text-teal-300 border border-teal-700 text-sm font-semibold mb-6">Power Automate(RPA), n8n(AI Agent)</span>
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                    반복 업무 최소화하고 <br><span class="text-teal-400">효율적 데이터 관리자</span>로의 전환
+                </h1>
+                <p class="text-lg md:text-xl text-stone-400 mb-10 max-w-2xl mx-auto">
+                    데이터 리터러시부터 n8n, Power Automate를 활용한 SAP 실무 연동까지. Mitsui Korea 업무 가치를 극대화하는 2일 완성 커리큘럼입니다.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="#overview" class="px-8 py-4 bg-teal-600 hover:bg-teal-500 text-white font-bold rounded-lg transition text-center shadow-lg shadow-teal-900/20">과정 자세히 보기</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="overview" class="py-20 px-4 bg-stone-50 border-b border-stone-200">
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-3xl font-bold text-stone-800 mb-4">과정 개요 및 목표</h2>
+                    <p class="text-stone-600 max-w-2xl mx-auto text-lg">
+                        이 과정은 수강생이 디지털 비서를 활용하여 스스로 업무를 자동화하고 개선할 수 있도록 설계되었습니다. 아래에서 핵심 목표와 교육 시간 배분을 확인하세요.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md transition">
+                            <div class="text-3xl mb-4">📊</div>
+                            <h3 class="font-bold text-lg mb-2 text-stone-800">데이터 리터러시</h3>
+                            <p class="text-stone-600 text-sm">업무 구조 재설계 및 자동화에 최적화된 데이터 관리 원칙 학습</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md transition">
+                            <div class="text-3xl mb-4">⚙️</div>
+                            <h3 class="font-bold text-lg mb-2 text-stone-800">실무 자동화 (PAD)</h3>
+                            <p class="text-stone-600 text-sm">Power Automate Desktop을 활용한 SAP 및 엑셀 연동 구현</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md transition">
+                            <div class="text-3xl mb-4">🤖</div>
+                            <h3 class="font-bold text-lg mb-2 text-stone-800">AI Agent (n8n)</h3>
+                            <p class="text-stone-600 text-sm">단순 RPA를 넘어 판단하는 자동화 워크플로우 설계 입문</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 hover:shadow-md transition">
+                            <div class="text-3xl mb-4">🌟</div>
+                            <h3 class="font-bold text-lg mb-2 text-stone-800">커리어 생존력</h3>
+                            <p class="text-stone-600 text-sm">자동화 기술을 통한 개인의 업무 가치 증명 및 부수입 창출 기반</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100 flex flex-col items-center">
+                        <h3 class="text-xl font-bold text-stone-800 mb-6 text-center">총 14시간 교육 구성비</h3>
+                        <div class="chart-container">
+                            <canvas id="timeAllocationChart"></canvas>
+                        </div>
+                        <div class="mt-6 flex flex-wrap justify-center gap-4 text-sm font-medium text-stone-600">
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-stone-300"></span> 이론/기초 (4h)</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-teal-400"></span> n8n 실습 (3h)</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-teal-700"></span> PAD/SAP 실습 (6h)</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 rounded-full bg-stone-800"></span> 랩업/기획 (1h)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="curriculum" class="py-20 px-4 bg-white border-b border-stone-200">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-10 text-center">
+                    <h2 class="text-3xl font-bold text-stone-800 mb-4">상세 커리큘럼</h2>
+                    <p class="text-stone-600 max-w-2xl mx-auto text-lg">
+                        버튼을 클릭하여 1일차와 2일차의 상세 교육 내용을 확인하세요. 각 세션은 이론-실습-회고의 최적화된 흐름으로 진행됩니다.
+                    </p>
+                </div>
+
+                <div class="flex justify-center gap-4 mb-8">
+                    <button onclick="switchTab('day1')" id="btn-day1" class="tab-btn active px-8 py-3 rounded-full border border-stone-300 font-bold transition shadow-sm">1일차: 데이터 & AI Agent</button>
+                    <button onclick="switchTab('day2')" id="btn-day2" class="tab-btn px-8 py-3 rounded-full border border-stone-300 text-stone-600 hover:bg-stone-100 font-bold transition shadow-sm">2일차: Power Automate 실무</button>
+                </div>
+
+                <div id="content-day1" class="space-y-6">
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 relative">
+                        <div class="absolute -left-3 top-8 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow-sm hidden sm:block"></div>
+                        <div class="sm:pl-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-stone-800">1~3교시 (3h): 비즈니스 데이터 리터러시</h3>
+                                <span class="text-sm font-semibold text-teal-700 bg-teal-100 px-3 py-1 rounded-full mt-2 sm:mt-0 w-max">이론 & 사례</span>
+                            </div>
+                            <p class="text-stone-600 mb-4">종합상사 업무 속 데이터 흐름(ERP-SAP-Excel)과 자동화에 최적화된 데이터 관리 원칙을 배웁니다.</p>
+                            <ul class="list-disc list-inside text-sm text-stone-500 space-y-1">
+                                <li>엑셀 지옥에서 벗어나는 데이터 전처리 원칙</li>
+                                <li>자동화가 가능한 데이터 vs 불가능한 데이터 구분법</li>
+                                <li>사전준비: 실무 엑셀 샘플 (민감정보 마스킹)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 relative">
+                        <div class="absolute -left-3 top-8 w-6 h-6 bg-stone-400 rounded-full border-4 border-white shadow-sm hidden sm:block"></div>
+                        <div class="sm:pl-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-stone-800">4교시 (1h): RPA vs AI Agent 마인드셋</h3>
+                                <span class="text-sm font-semibold text-stone-600 bg-stone-200 px-3 py-1 rounded-full mt-2 sm:mt-0 w-max">마인드셋</span>
+                            </div>
+                            <p class="text-stone-600 mb-4">자동화가 일자리를 위협하는 것이 아니라 커리어 생존력을 높이는 도구임을 이해합니다.</p>
+                            <ul class="list-disc list-inside text-sm text-stone-500 space-y-1">
+                                <li>단순 반복(RPA)을 넘어 판단(AI)하는 자동화의 가치</li>
+                                <li>자동화가 내 커리어에 주는 이점</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 relative">
+                        <div class="absolute -left-3 top-8 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow-sm hidden sm:block"></div>
+                        <div class="sm:pl-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-stone-800">5~7교시 (3h): n8n으로 만드는 나만의 AI 비서</h3>
+                                <span class="text-sm font-semibold text-teal-700 bg-teal-100 px-3 py-1 rounded-full mt-2 sm:mt-0 w-max">실습 (입문)</span>
+                            </div>
+                            <p class="text-stone-600 mb-4">n8n 인터페이스를 익히고, 뉴스 수집부터 메신저 전송까지 이어지는 워크플로우를 직접 설계합니다.</p>
+                            <ul class="list-disc list-inside text-sm text-stone-500 space-y-1">
+                                <li>n8n 노드(Node) 기반 워크플로우 설계 입문</li>
+                                <li>[실습] 글로벌 원자재/운임 정보 요약 보고서 자동화</li>
+                                <li>사전준비: n8n Desktop 설치, OpenAI API Key</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-day2" class="space-y-6 hidden">
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 relative">
+                        <div class="absolute -left-3 top-8 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow-sm hidden sm:block"></div>
+                        <div class="sm:pl-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-stone-800">1~2교시 (2h): PAD 기초와 웹 스크래핑</h3>
+                                <span class="text-sm font-semibold text-teal-700 bg-teal-100 px-3 py-1 rounded-full mt-2 sm:mt-0 w-max">실습</span>
+                            </div>
+                            <p class="text-stone-600 mb-4">Power Automate Desktop 환경을 설정하고 공시 정보를 엑셀로 자동 수집하는 기초를 다집니다.</p>
+                            <ul class="list-disc list-inside text-sm text-stone-500 space-y-1">
+                                <li>웹 접속 → 정보 추출 → 엑셀 기록 워크플로우</li>
+                                <li>[실습] 관세청/환율 정보 자동 수집</li>
+                                <li>사전준비: PAD 설치, Chrome 확장프로그램</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 relative">
+                        <div class="absolute -left-3 top-8 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow-sm hidden sm:block"></div>
+                        <div class="sm:pl-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-stone-800">3~4교시 (2h): [실습 1] SAP-Excel 연동 자동화</h3>
+                                <span class="text-sm font-semibold text-teal-700 bg-teal-100 px-3 py-1 rounded-full mt-2 sm:mt-0 w-max">실습 (심화)</span>
+                            </div>
+                            <p class="text-stone-600 mb-4">엑셀 데이터를 기반으로 SAP에서 대량의 전표를 조회하고 결과를 기록하는 과정을 자동화합니다.</p>
+                            <ul class="list-disc list-inside text-sm text-stone-500 space-y-1">
+                                <li>SAP GUI 스크립팅을 활용한 자동화 기초</li>
+                                <li>엑셀 송장번호 읽기 → SAP 조회 → 엑셀 업데이트</li>
+                                <li class="text-red-600 font-medium">사전준비: SAP GUI 스크립팅 활성화 (IT팀 협조 필수)</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 relative">
+                        <div class="absolute -left-3 top-8 w-6 h-6 bg-teal-600 rounded-full border-4 border-white shadow-sm hidden sm:block"></div>
+                        <div class="sm:pl-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-stone-800">5~6교시 (2h): [실습 2] PO 등록 자동화 (OCR)</h3>
+                                <span class="text-sm font-semibold text-teal-700 bg-teal-100 px-3 py-1 rounded-full mt-2 sm:mt-0 w-max">실습 (심화)</span>
+                            </div>
+                            <p class="text-stone-600 mb-4">비정형 데이터인 PDF나 이메일에서 정보를 추출하여 SAP 특정 T-Code에 입력하는 실습입니다.</p>
+                            <ul class="list-disc list-inside text-sm text-stone-500 space-y-1">
+                                <li>메신저/PDF 수신 → 정보 추출 → SAP 입력</li>
+                                <li>사전준비: 실무 PDF/메일 양식 샘플</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-6 relative">
+                        <div class="absolute -left-3 top-8 w-6 h-6 bg-stone-400 rounded-full border-4 border-white shadow-sm hidden sm:block"></div>
+                        <div class="sm:pl-8">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-stone-800">7교시 (1h): 일상의 자동화 & 워크숍 마무리</h3>
+                                <span class="text-sm font-semibold text-stone-600 bg-stone-200 px-3 py-1 rounded-full mt-2 sm:mt-0 w-max">회고</span>
+                            </div>
+                            <p class="text-stone-600 mb-4">개인의 성장을 돕는 일상 자동화 사례를 살펴보고, 실무 적용을 위한 로드맵을 작성합니다.</p>
+                            <ul class="list-disc list-inside text-sm text-stone-500 space-y-1">
+                                <li>[보너스] 블로그 포스팅 자동화로 개인 자산 쌓기</li>
+                                <li>팀별 자동화 아이디어 발굴 및 발표</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="workflows" class="py-20 px-4 bg-stone-50 border-b border-stone-200">
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-3xl font-bold text-stone-800 mb-4">주요 실습 Workflow 미리보기</h2>
+                    <p class="text-stone-600 max-w-2xl mx-auto text-lg">
+                        실제 강의에서 구축하게 될 핵심 자동화 파이프라인입니다. Mitsui Korea의 실무에 즉시 적용 가능한 Power Automate 실습을 우선적으로 확인하세요.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+                    <div class="workflow-card active border-2 rounded-xl p-5 cursor-pointer transition" onclick="showWorkflow(1, this)">
+                        <div class="text-2xl mb-2">🏢</div>
+                        <h3 class="font-bold text-lg text-stone-800">SAP 대량 전표 조회 (PAD)</h3>
+                        <p class="text-sm text-stone-500 mt-2">엑셀 리스트를 바탕으로 SAP를 자동 조작하여 전표 상태를 일괄 확인합니다.</p>
+                    </div>
+                    <div class="workflow-card bg-white border-2 border-transparent rounded-xl p-5 cursor-pointer transition shadow-sm hover:border-stone-300" onclick="showWorkflow(2, this)">
+                        <div class="text-2xl mb-2">📑</div>
+                        <h3 class="font-bold text-lg text-stone-800">구매주문(PO) 등록 (PAD)</h3>
+                        <p class="text-sm text-stone-500 mt-2">이메일 PDF의 데이터를 AI로 추출하여 SAP T-Code에 자동 입력합니다.</p>
+                    </div>
+                    <div class="workflow-card bg-white border-2 border-transparent rounded-xl p-5 cursor-pointer transition shadow-sm hover:border-stone-300" onclick="showWorkflow(3, this)">
+                        <div class="text-2xl mb-2">🌐</div>
+                        <h3 class="font-bold text-lg text-stone-800">글로벌 마켓 인사이트 (n8n)</h3>
+                        <p class="text-sm text-stone-500 mt-2">원자재/운임 뉴스를 AI가 분석하여 매일 아침 메신저로 보고합니다.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl p-8 border border-stone-200 shadow-md">
+                    <!-- Workflow 1: SAP (PAD) - Now First -->
+                    <div id="wf1-details" class="workflow-detail block">
+                        <h4 class="text-xl font-bold text-teal-800 mb-6 border-b border-stone-100 pb-4">Workflow 1: PAD 기반 SAP 대량 전표 조회 및 검증</h4>
+                        <div class="step-container flex flex-col md:flex-row items-center justify-between gap-4">
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">📄</div>
+                                <div class="font-bold text-stone-800">Step 1: Read</div>
+                                <div class="text-sm text-stone-500 mt-1">관리 중인 엑셀 파일 송장 리스트업</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">🔄</div>
+                                <div class="font-bold text-stone-800">Step 2: Loop</div>
+                                <div class="text-sm text-stone-500 mt-1">엑셀 각 행을 순차적으로 읽어 반복 실행</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-teal-50 rounded-lg p-4 border border-teal-200 text-center w-full">
+                                <div class="text-2xl mb-2">🖥️</div>
+                                <div class="font-bold text-teal-800">Step 3: SAP Action</div>
+                                <div class="text-sm text-teal-600 mt-1">SAP GUI 조작 → 화면 캡처 및 데이터 추출</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">💾</div>
+                                <div class="font-bold text-stone-800">Step 4: Update</div>
+                                <div class="text-sm text-stone-500 mt-1">조회 결과를 원본 엑셀에 다시 기록</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workflow 2: PO Registration (PAD) - Now Second -->
+                    <div id="wf2-details" class="workflow-detail hidden">
+                        <h4 class="text-xl font-bold text-teal-800 mb-6 border-b border-stone-100 pb-4">Workflow 2: PAD 기반 구매주문(PO) 자동 등록</h4>
+                        <div class="step-container flex flex-col md:flex-row items-center justify-between gap-4">
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">📩</div>
+                                <div class="font-bold text-stone-800">Step 1: Receive</div>
+                                <div class="text-sm text-stone-500 mt-1">이메일 첨부 PDF 또는 폴더 내 파일 감지</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-teal-50 rounded-lg p-4 border border-teal-200 text-center w-full">
+                                <div class="text-2xl mb-2">🔍</div>
+                                <div class="font-bold text-teal-800">Step 2: AI OCR</div>
+                                <div class="text-sm text-teal-600 mt-1">비정형 PDF에서 품명, 수량, 가격 추출</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">⌨️</div>
+                                <div class="font-bold text-stone-800">Step 3: SAP Entry</div>
+                                <div class="text-sm text-stone-500 mt-1">추출 데이터를 SAP 전용 T-Code에 입력</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">✅</div>
+                                <div class="font-bold text-stone-800">Step 4: Verify</div>
+                                <div class="text-sm text-stone-500 mt-1">입력 성공 여부 확인 및 담당자 알림</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Workflow 3: Market Insight (n8n) - Now Sub/Last -->
+                    <div id="wf3-details" class="workflow-detail hidden">
+                        <h4 class="text-xl font-bold text-teal-800 mb-6 border-b border-stone-100 pb-4">Workflow 3: n8n 기반 마켓 인사이트 에이전트</h4>
+                        <div class="step-container flex flex-col md:flex-row items-center justify-between gap-4">
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">⏱️</div>
+                                <div class="font-bold text-stone-800">Step 1: Trigger</div>
+                                <div class="text-sm text-stone-500 mt-1">매일 오전 8시 자동 실행 (Schedule)</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">🔍</div>
+                                <div class="font-bold text-stone-800">Step 2: Collect</div>
+                                <div class="text-sm text-stone-500 mt-1">구글 뉴스 등 키워드 뉴스 수집 (HTTP)</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-teal-50 rounded-lg p-4 border border-teal-200 text-center w-full">
+                                <div class="text-2xl mb-2">🧠</div>
+                                <div class="font-bold text-teal-800">Step 3: AI 요약</div>
+                                <div class="text-sm text-teal-600 mt-1">영업 관점 핵심 3문장 요약 (LLM)</div>
+                            </div>
+                            <div class="step-arrow"></div>
+                            <div class="flex-1 bg-stone-50 rounded-lg p-4 border border-stone-200 text-center w-full">
+                                <div class="text-2xl mb-2">💬</div>
+                                <div class="font-bold text-stone-800">Step 4: Action</div>
+                                <div class="text-sm text-stone-500 mt-1">개인 카카오톡/슬랙 보고서 전송</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="checklist" class="py-20 px-4 bg-white">
+            <div class="max-w-4xl mx-auto">
+                <div class="mb-12 text-center">
+                    <h2 class="text-3xl font-bold text-stone-800 mb-4">환경 구축 체크리스트</h2>
+                    <p class="text-stone-600 max-w-2xl mx-auto text-lg">
+                        원활한 실습을 위해 IT 부서와의 협의 및 사전 세팅이 반드시 필요합니다.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="border border-stone-200 rounded-2xl p-6 bg-stone-50">
+                        <h3 class="font-bold text-lg text-stone-800 mb-4 flex items-center gap-2">
+                            <span>💻</span> PC 환경 및 S/W
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-2">
+                                <span class="text-teal-600 font-bold mt-1">✓</span>
+                                <span class="text-stone-600 text-sm">Windows 10/11 노트북 필수 (SAP GUI 설치)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-teal-600 font-bold mt-1">✓</span>
+                                <span class="text-stone-600 text-sm">Microsoft Power Automate Desktop (무료)</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-teal-600 font-bold mt-1">✓</span>
+                                <span class="text-stone-600 text-sm">n8n Desktop 버전 설치</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-teal-600 font-bold mt-1">✓</span>
+                                <span class="text-stone-600 text-sm">Chrome 브라우저 및 PAD 확장 프로그램</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="border border-red-200 rounded-2xl p-6 bg-red-50/30">
+                        <h3 class="font-bold text-lg text-red-800 mb-4 flex items-center gap-2">
+                            <span>🔒</span> 네트워크 및 보안 (중요)
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-600 font-bold mt-1">!</span>
+                                <span class="text-stone-700 text-sm">사내 망에서 외부 API(OpenAI 등) 접속 허용</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-red-600 font-bold mt-1">!</span>
+                                <span class="text-stone-700 text-sm font-semibold">SAP GUI Scripting 권한: 서버(RZ11) 및 클라이언트 옵션 모두 허용 필수</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-stone-400 font-bold mt-1">✓</span>
+                                <span class="text-stone-600 text-sm">실습용 실무 엑셀 양식 및 PDF 파일 지참</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="bg-stone-900 text-stone-400 py-10 text-center">
+            <p class="text-sm">&copy; AutoBiz Training Program. Empowering Corporate Professionals.</p>
+        </footer>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const ctx = document.getElementById('timeAllocationChart').getContext('2d');
+            
+            const chartData = {
+                labels: ['이론 및 기초', 'n8n 실습 (AI)', 'PAD/SAP 실습', '랩업/기획'],
+                datasets: [{
+                    data: [4, 3, 6, 1],
+                    backgroundColor: [
+                        '#D6D3D1', 
+                        '#2DD4BF', 
+                        '#0F766E', 
+                        '#292524'  
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            };
+
+            const config = {
+                type: 'doughnut',
+                data: chartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            display: false 
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed + '시간';
+                                    }
+                                    return label;
+                                }
+                            },
+                            backgroundColor: '#292524',
+                            padding: 12,
+                            bodyFont: {
+                                family: 'Pretendard'
+                            },
+                            titleFont: {
+                                family: 'Pretendard'
+                            }
+                        }
+                    }
+                }
+            };
+
+            new Chart(ctx, config);
+        });
+
+        function switchTab(day) {
+            document.getElementById('btn-day1').classList.remove('active', 'text-white', 'bg-teal-700', 'border-teal-700');
+            document.getElementById('btn-day1').classList.add('text-stone-600', 'hover:bg-stone-100');
+            
+            document.getElementById('btn-day2').classList.remove('active', 'text-white', 'bg-teal-700', 'border-teal-700');
+            document.getElementById('btn-day2').classList.add('text-stone-600', 'hover:bg-stone-100');
+            
+            const activeBtn = document.getElementById(`btn-${day}`);
+            activeBtn.classList.remove('text-stone-600', 'hover:bg-stone-100');
+            activeBtn.classList.add('active', 'text-white', 'bg-teal-700', 'border-teal-700');
+
+            document.getElementById('content-day1').classList.add('hidden');
+            document.getElementById('content-day2').classList.add('hidden');
+            
+            document.getElementById(`content-${day}`).classList.remove('hidden');
+        }
+
+        function showWorkflow(id, el) {
+            const cards = document.querySelectorAll('.workflow-card');
+            cards.forEach(card => {
+                card.classList.remove('active', 'bg-teal-50', 'border-teal-600');
+                card.classList.add('bg-white', 'border-transparent', 'hover:border-stone-300');
+            });
+
+            el.classList.remove('bg-white', 'border-transparent', 'hover:border-stone-300');
+            el.classList.add('active', 'bg-teal-50', 'border-teal-600');
+
+            const details = document.querySelectorAll('.workflow-detail');
+            details.forEach(detail => detail.classList.add('hidden'));
+
+            document.getElementById(`wf${id}-details`).classList.remove('hidden');
+        }
+
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
